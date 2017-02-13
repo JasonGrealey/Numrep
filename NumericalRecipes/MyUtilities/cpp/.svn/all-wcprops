@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/repo/ph/NumericalRecipes/!svn/ver/62/MyUtilities/cpp
+END
+MyFileReaderArma.h
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/repo/ph/NumericalRecipes/!svn/ver/62/MyUtilities/cpp/MyFileReaderArma.h
+END
+MyFileReader.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/repo/ph/NumericalRecipes/!svn/ver/42/MyUtilities/cpp/MyFileReader.cpp
+END
+TestMyFileReader.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/repo/ph/NumericalRecipes/!svn/ver/33/MyUtilities/cpp/TestMyFileReader.cpp
+END
+MyFileReaderArma.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/repo/ph/NumericalRecipes/!svn/ver/62/MyUtilities/cpp/MyFileReaderArma.cpp
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/repo/ph/NumericalRecipes/!svn/ver/33/MyUtilities/cpp/Makefile
+END
+testfile.txt
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/repo/ph/NumericalRecipes/!svn/ver/34/MyUtilities/cpp/testfile.txt
+END
+MyFileReader.h
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/repo/ph/NumericalRecipes/!svn/ver/33/MyUtilities/cpp/MyFileReader.h
+END

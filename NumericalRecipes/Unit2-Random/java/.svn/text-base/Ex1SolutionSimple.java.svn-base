@@ -1,0 +1,153 @@
+//
+// Ex1 : Simulating the Muon lifetime experiment.
+//
+// A next to minimal solution.
+//
+// This is general enough to be used for any single shape
+//
+// [the simplest [possible solution would just be to adapt the MyGaussianPDF class]
+//  
+
+import java.lang.Math;
+import java.util.Random;
+import Jama.*;
+
+
+//=====================================
+// The interface : This promises all the information required by the random engine
+
+interface ISHAPE {
+	
+	public double evaluate( double arg ) ;
+    public double maxval() ;
+    public double lolimit() ;
+    public double hilimit() ;
+    
+}
+
+
+//===============================================
+// Exponential shape
+// This implements a concrete shape which honours ISHAPE interface
+// [I called it "shape" to avoid calling it "pdf" and hence caring about normalisation]
+
+class ExponentialWithBackground implements ISHAPE {
+
+    private double lifetime = 0 ;
+    private double backgroundFraction = 0;
+    private double lolimit = 0;
+    private double hilimit = 10*lifeime ;
+
+    // Simple constructor which sets no background, and 0-infinity limits
+    public ExponentialWithBackground( double l  ) {
+        lifetime = l;
+    }
+    
+    // Full constructor to let everything be set
+    public ExponentialWithBackground( double l, double b, double lo, double hi  ) {
+        lifetime = l;
+        backgroundFraction = b ;
+        lolimit = lo ;
+        hilimit = hi ;
+    }
+    
+    // Methods to honour the interface
+    
+    public double evaluate( double x ) {  return Math.exp(-x/lifetime) + backgroundFraction ; }
+    
+    public double maxval() { return this.evaluate(lolimit) ; }
+    
+    public double lolimit() { return lolimit ;} 
+    public double hilimit() { return hilimit ;} 
+   
+}
+    
+//===============================================
+// Random engine
+// This works for any shape you give it.
+// Nothing in here depends upon the concrete shape
+    
+class RandomEngine {
+    
+    private ISHAPE shapeFunction;
+    private Random randomGenerator ;
+                
+    //Constructor 
+    public RandomEngine( ISHAPE s ) {
+        shapeFunction = s  ;
+        randomGenerator = new Random();
+    }
+        
+    //Main method to return a random number with a Gaussian distribution
+    public double next() {
+            
+        double x , y1, y2 ;
+            
+        do {
+            x = randInRange( shapeFunction.lolimit(), shapeFunction.hilimit() )  ;
+            y1 = shapeFunction.evaluate( x );
+            y2 = randInRange( 0., shapeFunction.maxval() ) ;
+        } while( y2 > y1 ) ;
+            
+        return x ;
+    }
+ 
+    // Convenience helper function                         
+    private double randInRange( double lo, double hi ) { return lo + randomGenerator.nextDouble() * ( hi-lo ) ; }
+    
+}
+                             
+    
+                    
+//===============================================
+// main
+
+public final class Ex1SolutionSimple {
+                                 
+    public static final void main(String... aArgs){
+        
+        System.out.println("Test of random generation of muon experiment ");
+ 
+        // For all output
+        MyFileWriter fw =  new MyFileWriter( ) ;
+        
+        // Create the exponential shape functions without and with background
+        ExponentialWithBackground shape1 = new ExponentialWithBackground( 2.2, 0., 0., 15. ) ;  // background set to zero
+        ExponentialWithBackground shape2 = new ExponentialWithBackground( 2.2, 0.1, 0., 15. ) ; // background set to 0.1
+        
+        //Create random generator engines
+        RandomEngine ran1 = new RandomEngine( shape1 ) ;
+        RandomEngine ran2 = new RandomEngine( shape2 ) ;
+        
+                                    
+        // Generate 1000 events and write them out to a file
+        
+        System.out.println("    Generating times  ");
+                                     
+        int N = 1000 ;
+        Matrix timesWithoutBkg = new Matrix(N,1);
+        Matrix timesWithBkg    = new Matrix(N,1);
+        double x ;
+                                     
+        for (int idx = 0; idx < N; ++idx){
+
+            x = ran1.next() ;
+            timesWithoutBkg.set(idx,0, x );
+
+            x = ran2.next() ;
+            timesWithBkg.set(idx,0, x );
+        
+        }
+        
+        System.out.println("    Writing Files  ");
+
+        fw.writeFile( "timesWithoutBkg.txt", timesWithoutBkg ) ;
+        fw.writeFile( "timesWithBkg.txt", timesWithBkg ) ;
+        
+        System.out.println("    Finished  ");
+
+    }
+    
+}
+                                     
+  

@@ -1,0 +1,82 @@
+10
+
+dir
+185
+https://svn.ecdf.ed.ac.uk/repo/ph/NumericalRecipes
+https://svn.ecdf.ed.ac.uk/repo/ph/NumericalRecipes
+
+
+
+2013-11-23T10:31:57.785870Z
+185
+pclarke
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+283042d6-0ca6-4e36-9c5a-183c20a96565
+
+PackagesJava
+dir
+
+Unit3-Random
+dir
+
+PackagesCPP
+dir
+
+MyUtilities
+dir
+
+java
+dir
+
+ant-tutorial
+dir
+
+scala
+dir
+
+Unit7-MCMC
+dir
+
+ExerciseSolutions
+dir
+
+PackagesPy
+dir
+
+GnuPlot
+dir
+
+Unit5-ODEs
+dir
+
+Unit2-Minimisation
+dir
+
+md
+dir
+
+Unit4-MonteCarlo
+dir
+
+Unit1-Matrices
+dir
+
+Unit6-FFTW
+dir
+
+Unit0-Introduction
+dir
+

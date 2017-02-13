@@ -1,0 +1,20 @@
+# Python matrix class
+
+
+class Matrix{
+
+        #intialisation Constructor
+        def __init__(self,row,column):
+        self.row=row
+        self.column=column
+        self.m= [[m[a][b]=0 for a in range(row)]for b in range(column)]
+
+        #copy constructor
+        def copy(self,Matrix):
+        self.Matrix=Matrix
+
+        #setter method
+        def __setitem__(self,i,j):
+        
+
+}

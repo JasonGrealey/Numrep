@@ -1,0 +1,50 @@
+//
+//  MyMinimiser.h
+//  
+//
+//  Created by PeterClarke on 25/06/2013.
+//  Copyright 2013 __MyCompanyName__. All rights reserved.
+//
+#include "IMinimiser.h"
+#include <string>
+
+void log( std::string );
+
+class MyMinimiser : public IMinimiser
+{
+	public:
+		MyMinimiser();
+		~MyMinimiser();
+		// To set convergence criteria
+		void setConvergenceLimit( double conv);
+		void setMaxIterations( int max );
+		void setStartParameters( MyMatrix params, MyMatrix incs );
+
+		// Main minimising method
+		MyMatrix minimise( double chisq );
+
+		//Methods to report if finished
+		bool isFinished();
+
+		// At the end you will need to know the errors.
+		//public Matrix getErrors() 
+
+	private:
+		int m_numberOfParameters;
+		int m_currentParameter; 
+
+		double m_convergenceLimit;
+
+		int m_maxIterations;
+		int m_currentIterations;
+
+		int m_minCycles;
+		int m_currentCycles;
+
+		bool m_isFinished;
+
+		MyMatrix m_parameters;
+		MyMatrix m_increments;
+
+		double m_last_chisq;
+};

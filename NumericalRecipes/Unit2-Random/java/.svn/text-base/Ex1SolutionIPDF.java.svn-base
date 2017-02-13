@@ -1,0 +1,178 @@
+//
+// Ex1 : Simulating the Muon lifetime experiment.
+//  
+// This is how one might do a more complex solution - more work now, but makes it eay to "compose" PDFS
+//
+//  It not a complete solution, it only shows you how to add PDFs
+//
+// 
+//
+
+
+//=====================================
+// The interface
+interface IPDF {
+	
+	public double evaluate( double arg ) ;
+	public double normalise( ) ;
+	public double evaluateNormalised( double arg) ;
+	public void setLimits( double lo, double hi) ;
+    
+}
+
+
+//=====================================
+// Composite PDF which is the sum of many other PDFS
+class NormalisedSumPDF implements IPDF 
+{
+    private IPDF[] pdfs = new IPDF[10];
+    private double[] fractions = new double[10];
+    private int numberOfPDFs = 0; 
+    double sumOfFractions = 0.; 
+    
+    public NormalisedSumPDF () {
+    }
+    
+    public void addPDF( IPDF pdf, double fraction ) {
+        pdfs[numberOfPDFs] = pdf ;
+        fractions[numberOfPDFs] = fraction ;
+        numberOfPDFs++ ;
+        sumOfFractions += fraction ;
+    }
+    
+    
+    public double evaluate( double arg ) { 
+        double value = 0 ;
+        for( int i=0; i <numberOfPDFs; i++ ) {
+            value += pdfs[i].evaluateNormalised( arg) * fractions[i] ;
+        }
+        value /= sumOfFractions ;
+        return value ;
+    }
+
+    public double normalise( ) { 
+        return 1.0 ;
+    }
+    
+    public double evaluateNormalised( double arg ) {
+        return this.evaluate( arg) ;
+    }
+    
+    public void setLimits( double lo, double hi ) {
+        for( int i=0; i <numberOfPDFs; i++ ) {
+            pdfs[i].setLimits( lo, hi ) ;
+        }
+    }
+        
+    
+}
+
+
+//===============================================
+// Two PDFS
+
+class ExponentialPDF implements IPDF {
+    private double lifetime = 0 ;
+    private double lo = 0. ;
+    private double hi = 0. ;
+
+    public ExponentialPDF( double l) {
+        lifetime = l;
+    }
+    
+    public double evaluate( double x ) {
+        return Math.exp(-lifetime*x) ;
+    }
+    
+    public double normalise () {
+        return lifetime * ( Math.exp(-lifetime*lo) -  Math.exp(-lifetime*hi) ) ;
+    }
+    
+    public double evaluateNormalised( double x ) {
+        return this.evaluate(x) / this.normalise() ;
+    }
+    
+    public void setLimits( double _lo, double _hi ) {
+        lo = _lo ;
+        hi = _hi ;
+    }
+    
+}
+    
+
+class FlatPDF implements IPDF {
+    private double lo = 0. ;
+    private double hi = 0. ;
+    
+    public FlatPDF( ) {}
+    
+    public double evaluate( double x ) {
+        return 1.0 ;
+    }
+    
+    public double normalise () {
+        return (hi-lo) ;
+    }
+    
+    public double evaluateNormalised( double x ) {
+        return this.evaluate(x) / this.normalise() ;
+    }
+    
+    public void setLimits( double _lo, double _hi ) {
+        lo = _lo ;
+        hi = _hi ;
+    }
+    
+}
+
+
+//===============================================
+// main
+
+public final class TestIPDF {
+	
+	public static final void main(String... aArgs){
+                
+        // Make two PDFs
+        ExponentialPDF pdfexp = new ExponentialPDF( 2.2 ) ;
+        FlatPDF        pdfflat = new FlatPDF( ) ;
+
+        // Make a composite PDF
+        NormalisedSumPDF pdfsum = new NormalisedSumPDF() ;
+
+        pdfsum.addPDF( pdfexp, 0.9 ) ;
+        pdfsum.addPDF(pdfflat, 0.1 ) ;
+
+        pdfsum.setLimits( 0., 20. ) ;
+        
+        //Use it in a random generator....
+        //...  code here.....
+        
+        
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

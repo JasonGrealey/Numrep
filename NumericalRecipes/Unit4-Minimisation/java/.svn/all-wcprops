@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/repo/ph/NumericalRecipes/!svn/ver/59/Unit2-Minimisation/java
+END
+MyMinimiser.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/repo/ph/NumericalRecipes/!svn/ver/12/Unit2-Minimisation/java/MyMinimiser.java
+END
+IMinimiser.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/repo/ph/NumericalRecipes/!svn/ver/11/Unit2-Minimisation/java/IMinimiser.java
+END
+testData.txt
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/repo/ph/NumericalRecipes/!svn/ver/11/Unit2-Minimisation/java/testData.txt
+END
+MinuitFit.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/repo/ph/NumericalRecipes/!svn/ver/59/Unit2-Minimisation/java/MinuitFit.java
+END
+testDataII.txt
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/repo/ph/NumericalRecipes/!svn/ver/11/Unit2-Minimisation/java/testDataII.txt
+END
+SimpleFit.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/repo/ph/NumericalRecipes/!svn/ver/17/Unit2-Minimisation/java/SimpleFit.java
+END

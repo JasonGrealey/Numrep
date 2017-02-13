@@ -1,0 +1,10 @@
+import numpy as py
+import math as mth
+from ODE import *
+import matplotlib.pyplot as plt
+
+def main():
+    
+
+
+main()

@@ -1,0 +1,100 @@
+//
+//  MyMinimiser.cpp
+//  
+//
+//  Created by Greig Cowan on 18/09/2013.
+//  Copyright 2013 __MyCompanyName__. All rights reserved.
+//
+
+#include "MyMinimiser.h"
+#include <iostream>
+
+void log(std::string aMessage){
+	std::cout << aMessage << std::endl;
+};
+
+MyMinimiser::MyMinimiser():
+	 m_numberOfParameters(0)
+	, m_currentParameter(0) 
+	, m_convergenceLimit(0.001)
+	, m_maxIterations(1000000)
+	, m_currentIterations(0)
+	, m_minCycles(100)
+	, m_currentCycles(0)
+	, m_isFinished(false)
+	, m_last_chisq(100000000000.)
+	, m_parameters(0,0)
+	, m_increments(0,0)
+{
+}
+
+/*
+MyMinimiser::~MyMinimiser()
+{}
+*/
+
+void MyMinimiser::setStartParameters( MyMatrix params, MyMatrix incs ) {
+	//Check this is a 1D matrix being used as a Vector
+	if( params.getColumnDimension() != 1 ) return ;
+	m_numberOfParameters = params.getRowDimension() ;
+	m_parameters = params ;
+	m_increments = incs ;
+}
+
+void MyMinimiser::setConvergenceLimit( double conv ) { m_convergenceLimit = conv ; }
+
+void MyMinimiser::setMaxIterations( int max ) { m_maxIterations = max; }
+
+bool MyMinimiser::isFinished() { return m_isFinished ; }
+
+// Main minimising method
+MyMatrix MyMinimiser::minimise( double chisq )
+{		
+	m_currentIterations++ ;
+	if(m_currentIterations > m_maxIterations ) {
+		m_isFinished = true ;
+		//log("Finished without convergence");
+		return m_parameters ;
+	}
+
+	//log("----------");
+	//log("---chisq= "+Double.toString(chisq)+"   lastchisq= "+Double.toString(last_chisq));
+	//log("-------m= "+Double.toString(parameters.get(0,0))+"   inc= "+Double.toString(increments.get(0,0)));
+	//log("-------c= "+Double.toString(parameters.get(1,0))+"   inc= "+Double.toString(increments.get(1,0)));
+
+	//Vary parameter being minimised on or move to next parameter
+	if( (chisq<m_last_chisq) && ((m_last_chisq - chisq) < m_convergenceLimit) ) {
+		//It has converged in this parameter so we move to the next parameter
+		m_currentParameter++ ;
+		if( m_currentParameter > m_numberOfParameters-1 ) {
+			m_currentParameter = 0 ;
+			m_currentCycles++ ;
+			if( m_currentCycles > m_minCycles ) {
+				m_isFinished =  true ;
+				return m_parameters ;
+			}
+		}
+		m_parameters.set(m_currentParameter,0, m_parameters.get(m_currentParameter,0) + m_increments.get(m_currentParameter,0) ) ;
+		m_last_chisq = chisq ;
+		return m_parameters ;
+
+	}
+	else {
+		//We continue with this parameter
+		if( chisq < m_last_chisq ) {
+			//Continue in same direction
+			m_parameters.set(m_currentParameter,0, m_parameters.get(m_currentParameter,0) + m_increments.get(m_currentParameter,0) ) ;
+			m_last_chisq = chisq ;
+			return m_parameters;
+		}
+		else {
+			//Reverse and halve the increment
+			m_increments.set(m_currentParameter,0, m_increments.get(m_currentParameter,0)*-0.6 );
+			m_parameters.set(m_currentParameter,0, m_parameters.get(m_currentParameter,0) + m_increments.get(m_currentParameter,0) ) ;
+			m_last_chisq = chisq ;
+			return m_parameters;
+		}
+	}
+}
+
+

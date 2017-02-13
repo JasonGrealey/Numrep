@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/repo/ph/NumericalRecipes/!svn/ver/64/Unit2-Minimisation/cpp
+END
+Makefile-Minuit
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/repo/ph/NumericalRecipes/!svn/ver/64/Unit2-Minimisation/cpp/Makefile-Minuit
+END
+MyMinimiser.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/repo/ph/NumericalRecipes/!svn/ver/26/Unit2-Minimisation/cpp/MyMinimiser.cpp
+END
+testData.txt
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/repo/ph/NumericalRecipes/!svn/ver/60/Unit2-Minimisation/cpp/testData.txt
+END
+MyMinimiser.h
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/repo/ph/NumericalRecipes/!svn/ver/26/Unit2-Minimisation/cpp/MyMinimiser.h
+END
+MinuitFit.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/repo/ph/NumericalRecipes/!svn/ver/64/Unit2-Minimisation/cpp/MinuitFit.cpp
+END
+testDataII.txt
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/repo/ph/NumericalRecipes/!svn/ver/60/Unit2-Minimisation/cpp/testDataII.txt
+END
+IMinimiser.h
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/repo/ph/NumericalRecipes/!svn/ver/26/Unit2-Minimisation/cpp/IMinimiser.h
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/repo/ph/NumericalRecipes/!svn/ver/26/Unit2-Minimisation/cpp/Makefile
+END
+SimpleFit.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/repo/ph/NumericalRecipes/!svn/ver/64/Unit2-Minimisation/cpp/SimpleFit.cpp
+END

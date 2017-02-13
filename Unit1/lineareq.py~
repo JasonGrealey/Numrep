@@ -1,0 +1,8 @@
+#class for making y=mx+c
+
+def predy(self,m,x,c):
+    self.y = m*x + c
+
+
+m0 = 0
+c0 = 0

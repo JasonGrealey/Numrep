@@ -1,0 +1,13 @@
+import numpy as np
+
+ # Read in the data
+ print("Reading in coefficients matrix")
+ coeffs = numpy.loadtxt("SimultaneousMatrix.txt")
+ print("Reading in vector")
+ vector = numpy.loadtxt("SimultaneousVector.txt")
+
+ # Create matrices
+ mcoeffs = numpy.matrix(coeffs)
+ mvector = numpy.matrix(vector).T
+
+print(mvector)

@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/repo/ph/NumericalRecipes/!svn/ver/96/Unit1-Matrices/cpp
+END
+Makefile-Armadillo
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/repo/ph/NumericalRecipes/!svn/ver/34/Unit1-Matrices/cpp/Makefile-Armadillo
+END
+MyMatrix.h
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/repo/ph/NumericalRecipes/!svn/ver/33/Unit1-Matrices/cpp/MyMatrix.h
+END
+TestArmadillo.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/repo/ph/NumericalRecipes/!svn/ver/46/Unit1-Matrices/cpp/TestArmadillo.cpp
+END
+MyMatrix.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/repo/ph/NumericalRecipes/!svn/ver/96/Unit1-Matrices/cpp/MyMatrix.cpp
+END
+TestMyMatrix.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/repo/ph/NumericalRecipes/!svn/ver/33/Unit1-Matrices/cpp/TestMyMatrix.cpp
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/repo/ph/NumericalRecipes/!svn/ver/33/Unit1-Matrices/cpp/Makefile
+END
+testfile.txt
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/repo/ph/NumericalRecipes/!svn/ver/33/Unit1-Matrices/cpp/testfile.txt
+END
