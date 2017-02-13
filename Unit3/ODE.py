@@ -80,5 +80,30 @@ class ODESinusoid():
     def exactsoln(self,x):
         return sin(self.omega*x)
 
+#=============================================================
+
+class StepEuler:
+    def dy(self,ode,coords,dx):
+        dy =ode.firstderiv(coords)*dx
+        return [dy,dx]
+
+class StepRK:
+    def dy(self,ode,pair,dx):
+        x = coord[0]
+        y = coord[1]
+        d1 = ode.firstderiv( [x,y] )
+        d2 = ode.firstderiv( [x+dx/2,y+(dx/2)*d1 ] )
+        d3 = ode.firstderiv( [x+dx/2,y+(dx/2)*d2] )
+        d4 = ode.firstderiv( [x+dx,y+dx*d3] )
+        dy = dx*(1./6.)*(d1 + 2*d2 + 2*d3 + d4)
+        return [ dy, dx ]
+
+class StepRK0:
+    def dy(self,ode,pair,dx):
+        mid = [pair[0]+dx/2, pair[1]+ode.firstderiv(pair)* (dx/2)]
+        dy = ode.firstderiv(mid) * dx
+        return[dx,dy]
+
+
 
 
