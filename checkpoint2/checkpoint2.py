@@ -2,29 +2,17 @@ import numpy as py
 import math as mth
 from ODE import *
 import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
 
 def main():
     
-    
-    types = (input( "Enter function type (exp, sin, poly) "))
-    nsteps = int( input( "Enter number of steps ") )
-    delta = float( input( "Enter step size "))
-
+    ode = ODEefield(10.)
+    #nsteps = int( input( "Enter number of steps ") )
+    delta = float (input( "Enter step size "))
+    nsteps = int(4.0/delta)
     #printcheck
-    print ("Running with = %s , nsteps = %d and dx = %d" % ( types, nsteps, delta))
+    print ("Running with  nsteps = %d and dx = %d" % ( nsteps, delta))
     #Create ODE
-    if( types == 'poly' ):
-        ode = ODEPoly([ 1.0, 1.0, -3.0, 1.0 ] )
-        print(ode.ival)
-    elif( types == 'exp' ):
-        ode = ODEExp(1.0 )
-        print(ode.ival)
-    elif( types == 'sin' ):
-        ode = ODESinusoid( 1.0 )
-        print(ode.ival)
-    else:
-        print (" No functional form specified: %s" % (types))
-        quit()
     
         # poly = ODEPoly([1.0,2.0,3.0,4.0])
         #print(poly.firstderiv([1.0,1.0]))
@@ -56,18 +44,28 @@ def main():
     yvalrk4 = rk4res.yvals()
     xvals = rk4res.xvals()
     
-    yexact = [ode.exactsoln(coords[0]) for coords in eulerres.retall()]
+   # yexact = [ode.exactsoln(coords[0]) for coords in eulerres.retall()]
  #   plt.plot(x, x)
   #  plt.plot(x, 2 * x)
    # plt.plot(x, 3 * x)
     #plt.plot(x, 4 * x)
 
-
+    def piecewise_linear(x, x0, y0, k1,k2,k3,k4):
+        return (np.piecewise(x, [x < x0], [lambda x:k1*x + y0-k1*x0, lambda x:k2*x + y0-k2*x0, lambda x:k3*x + y0-k3*x0, lambda x:k4*x + y0-k4*x0]))
+    popt, fit = curve_fit(piecewise_linear,xvals,yvaleul)
+    polyfit =np.poly1d(np.polyfit(xvals, yvaleul, 9))
+    #print("polyfitting coefficients")
+    #for i in range (20):
+    #    print(polyfit[i])
+    plt.plot(fit)
+    plt.xlim(0,4)
+    plt.show()
     plt.plot(xvals,yvaleul)
     plt.plot(xvals,yvalrk2)
     plt.plot(xvals,yvalrk4)
-    plt.plot(xvals,yexact)
+   # plt.plot(xvals,yexact)
     plt.legend(['Euler', 'RK2', 'RK4', 'Exact'], loc='upper left')
+    plt.title("Electric field")
     plt.show()
 
 main()

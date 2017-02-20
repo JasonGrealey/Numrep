@@ -100,11 +100,11 @@ class ODEefield():
         self.ival = [0.,self.exactsoln(0.)]
     
     def firstderiv(self,coords):
-        if coords[0] == 1:
+        if 0.999 <= coords[0] <= 1.001:
             return (self.height)
-        elif coords[0] == 2:
-            return (-2.0 self.height)
-        elif coords[0] == 3:
+        elif 1.99 <= coords[0] <= 2.001:
+            return (-2.0 *self.height)
+        elif 2.99 <= coords[0] <= 3.001:
             return (self.height)
         else:
             return 0.
@@ -123,12 +123,12 @@ class ODEefield():
      #       return (-1.0 *self.height)
       #  elif 3 <= x <= 4:
        #     return (0.)
-       def exactsoln(self,x):
-           if 0<=x<=4:
-               return(  np.piecewise(x, [x < 1,1<= x <=2,2<=x<=3,3 <= x <= 4], [0.,self.height,(-1.0) *(self.height),0.]))
-           else:
-               print("x must be positive and in the range 0->4")
-               quit()
+    def exactsoln(self,x):
+        if 0<=x<=4:
+            return(  np.piecewise(x, [0<=x <= 1,1<= x <=2,2<=x<=3,3 <= x <= 4], [0.,self.height,(-1.0) *(self.height),0.]))
+        else:
+            print("x must be positive and in the range 0->4")
+            quit()
 
 #=============================================================
 

@@ -100,11 +100,11 @@ class ODEefield():
         self.ival = [0.,self.exactsoln(0.)]
     
     def firstderiv(self,coords):
-        if coords[0] == 1:
+        if coords[0] = 1:
             return (self.height)
-        elif coords[0] == 2:
+        elif coords[0] = 2:
             return (-2.0 self.height)
-        elif coords[0] == 3:
+        elif coords[0] = 3:
             return (self.height)
         else:
             return 0.
