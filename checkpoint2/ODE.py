@@ -78,19 +78,33 @@ class ODEPoly():
 #=============================================================
 
 class ODESinusoid():
-    def __init__(self,omega):
+    def __init__(self,omega,a,c,start,end):
         print ('creating wave')
         self.omega=omega
+        self.a=a
+        self.c=c
+        self.start=start
+        self.end=start
         self.ival = [0. , self.exactsoln(0.)]
         
     def firstderiv(self,coords):
-        return self.omega * math.cos(self.omega*coords[0])
+        if coords[0]<self.start:
+            return 0.
+        elif coords[0]>self.end:
+            return 0.
+        else:
+            return (self.omega*self.a * math.cos(self.omega*coords[0]+self.c))
 
     def ival(self):
         return self.ival
-
+        #here we are only evaluating the parts of the sinusoid present from the first integration ensureing that it is 0 when supposed to be
     def exactsoln(self,x):
-        return (math.sin(self.omega*x))
+        if x< self.start:
+            return 0.
+        elif x> self.end:
+            return 0.
+        else:
+            return ((self.a)*(math.sin(self.omega*x+self.c)))
 #=============================================================
 
 class ODEefield():
