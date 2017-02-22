@@ -1,17 +1,18 @@
 import numpy as py
 import math as mth
-from ODE import *
+from ODEtest import *
 import matplotlib.pyplot as plt
 from scipy import optimize
 #stepsize0.5 to start
 def main():
     height = 10
-    ode = ODEefield(height)
+    ode = ODErealefield(height)
     #nsteps = int( input( "Enter number of steps ") )
     delta = float (input( "Enter step size "))
     nsteps = int(4.0/delta)
+    print(delta)
     #printcheck
-    print ("Running with  nsteps = %d and dx = %d" % ( nsteps, delta))
+    print ("Running with  nsteps = %d and dx = %d" % ( nsteps,delta))
     #creating the Euler step
    # print("pre euler step")
     eulermethod=StepEuler( )
