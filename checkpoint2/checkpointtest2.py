@@ -1,11 +1,11 @@
 import numpy as py
 import math as mth
-from ODEtest import *
+#from ODEtest import *
 import matplotlib.pyplot as plt
 from scipy import optimize
 #stepsize0.5 to start
 def main():
-    height = 10.0
+    height = 5.0
     #ode = ODErealefield(height)
     #nsteps = int( input( "Enter number of steps ") )
     delta = float (input( "Enter step size "))
@@ -28,7 +28,7 @@ def main():
         
     def gradientEUL(x,yinit,step):
         ynew = yinit + step*ro(x)
-        return(ynew)
+        return float(ynew)
     def gradrk4(x,yinit,step):
         d1 = ro(x)
         d2 = ro(x+step/2) 
@@ -36,7 +36,7 @@ def main():
         d4 = ro(x+step)
         ynew = yinit +  (step)*(1.0/6.0)*(d1 + 2*(d2) + 2*(d3) + (d4))
         return float(ynew)
-    
+     
     xvals =[]
     xvals.append(initvali[0])
     yevals=[]
@@ -44,37 +44,19 @@ def main():
     #EULER
     yevals.append(initvali[1])
     yvvals.append(initvali[1])
-    #print(yevals)
-    #print(yvvals)
+
     val=0
     for i in range(nsteps):
         #print (i)
         val += delta
         #print (val)
         xvals.append(val)
-        if i<=1:
-            y = gradientEUL(val,yevals[0],delta)
-           # print("y=")
-           # print(y)
-            yevals.append(y)
-            vinit = 0
-            yvvals.append(vinit)
-        else:
-           # print("p=")
-            p = gradientEUL(val,yevals[i-1],delta)
+        p = gradientEUL(val,yevals[i-1],delta)
             #can use the same idea here and do a euler plot for v straight away
-            v = yvvals[i-1] + delta*((-1.0)*yevals[i])
-            yvvals.append(v)
+        v = yvvals[i-1] + delta*((-1.0)*yevals[i])
+        yvvals.append(v)
            # print(p)
-            yevals.append(p)
-   # print (yvvals)
-   # print (yevals)
-   
-
-
-    
-   # xnewvals =[]
-   # xnewvals.append(initvali[0])
+        yevals.append(p)
     ynewevals=[]
     ynewvvals=[]
     ynewevals.append(initvali[1])
@@ -84,55 +66,34 @@ def main():
     val=0
     #calculating e fields with runge kutta 4
     for i in range(nsteps):
-        if i<1:
-            val+=delta
-            y = gradrk4(val,ynewevals[0],delta)
-            ynewevals.append(y)
-        else:
-            val+=delta
-            p = gradrk4(val,ynewevals[i-1],delta)
-            ynewevals.append(p)
-        
-
-    
-
-
+       # if i<1:
+       #     val+=delta
+       #     y = gradrk4(val,ynewevals[0],delta)
+       #     ynewevals.append(y)
+       # else:
+        val+=delta
+        p = gradrk4(val,ynewevals[i-1],delta)
+        ynewevals.append(p)
 
     val=0
     for i in range(nsteps):
         val += delta
-    #    xnewvals.append(val)
-        if i<1:
-           # y = gradrk4(val,ynewevals[0],delta)
-           # ynewevals.append(y)
-            vnewinit = 0
-            ynewvvals.append(vnewinit)
-            print("done here")
-        elif i==(nsteps-2): #allowed i+1
-           # p = gradrk4(val,ynewevals[i-1],delta)
-            #can use the same idea here and do a euler plot for v straight away
+        #if i<1:
+           # vnewinit = 0
+           # ynewvvals.append(vnewinit)
+           # print("done here")
+        if i==(nsteps-2): #allowed i+1
             v = ynewvvals[i-1] + delta*(1.0/3.0)*((-1.0)*(ynewevals[i] + 2*(ynewevals[i+1])))
             ynewvvals.append(v)
-           # ynewevals.append(p)
         elif i==(nsteps-1): #allow i
-           # p = gradrk4(val,ynewevals[i-1],delta)
-            #can use the same idea here and do a euler plot for v straight away
             v = ynewvvals[i-1] + delta*((-1.0)*(ynewevals[i]))
             ynewvvals.append(v)
-           # ynewevals.append(p)
         elif i==(nsteps-3):#allowed i + 2 values
-           # p = gradrk4(val,ynewevals[i-1],delta)
-            #can use the same idea here and do a euler plot for v straight away
             v = ynewvvals[i-1] + delta*(-1.0/5.0)*(ynewevals[i] + 2*(ynewevals[i+1]) + 2*(ynewevals[i+2]))
             ynewvvals.append(v)
-           # ynewevals.append(p)
         else:
-           # p = gradrk4(val,ynewevals[i-1],delta)
-           # print(i)
-           # print(nsteps)
             v = ynewvvals[i-1] + delta*(1.0/6.0)*((-1.0)*(ynewevals[i] + 2*(ynewevals[i+1]) + 2*(ynewevals[i+2]) + ynewevals[i+3]))
             ynewvvals.append(v)
-           # ynewevals.append(p)
 
    
     

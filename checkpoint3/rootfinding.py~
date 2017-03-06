@@ -1,0 +1,167 @@
+import numpy as np
+import math
+import matplotlib.pyplot as plt
+
+#here we are writing some code to plot the functions
+#result lists
+bipres= []
+bisres=[]
+bieres = []
+#10.2 -7.4x -2.1x^2 +x^3
+#e^x - 2
+#cos(X)sin(3s)
+def main():
+    class poly():
+        def __init__(self,_coeffs):
+            self.coeffs = _coeffs
+        def val(self,x):
+            val=0
+            for power in range(len(self.coeffs)):
+                val+= self.coeffs[power]*math.pow(x,float(power))
+            return val
+        def der(self,x):
+            valder = 0
+            for power in range(len(self.coeffs)-1):
+                valder+= (power+1)*self.coeffs[power+1]*math.pow(coords[0], float(power))
+            return valder
+    class sincos():
+        def __init__(self,ksin,kcos):
+            self.ksin=ksin
+            self.kcos=kcos
+        def val(self,x):
+            return (math.cos(self.kcos*x))*(math.sin(self.ksin*x))
+        def der(x):
+            return (-(1.0)*self.kcos*(math.sin(self.kcos*x))*(math.sin(self.ksin*x)) + self.ksin*((math.cos(self.kcos*x))*(math.cos(self.ksin*x))))
+    class exp():
+        def __init__(self,k,consta):
+            self.k=k
+            self.consta=consta
+        def val(self,x):
+            return (np.exp(x*self.k) + self.consta)
+        def der(self,x):
+            return (self.k*(np.exp(x*self.k)))
+
+    '''
+    sincostest = sincos(3,1)#[sin,cos]
+    exptest = exp(1,0)#[k,const]
+    polytest = poly([-4,0,1])#[const,x^1...x^n]
+    print ("value at 1 of sincos is " '{}'.format(sincostest.val(np.pi/2.0)))
+    print ("value at 2 of poly is " '{}'.format(polytest.val(2)))
+    print ("value at 100 of exp is " '{}'.format(exptest.val(1)))
+    #functions all defined
+    '''
+    #now for the real functions
+    sincos = sincos(3,1)#[sin,cos]
+    expon = exp(2,-1)#[k,const]
+    poly = poly([10.2,-7.4,-2.1,1])#[const,x^1...x^n]
+    xvalpol = np.linspace(-3,4)
+    xvale = np.linspace(-1,0.3)
+    xvalsi = np.linspace(-1.5,2)
+    
+    #print(xvalues)
+    ysin = []
+    ypoly = []
+    yexp = []
+    for i in range(len(xvalpol)):#they have same range
+        ysin.append(sincos.val(xvalsi[i]))
+        ypoly.append(poly.val(xvalpol[i]))
+        yexp.append(expon.val(xvale[i]))
+    #print(ysin)
+    #print(yexp)
+    #print(ypoly)
+    
+    #  for i in len(xvalues)
+    plt.figure(1)
+
+    # linear
+    plt.subplot(221)
+    plt.plot(xvalpol, ypoly)
+    plt.title('poly')
+
+    plt.subplot(222)
+    plt.plot(xvale, yexp)
+    plt.title('exp')
+
+    plt.subplot(223)
+    plt.plot(xvalsi, ysin)
+    plt.title('sincos')
+    
+    plt.show()
+    
+    xvals = []
+    def sign(a, b):#ret true if same sign, false otherwise
+        return( a * b > 0)
+    def intervalfinder(start,finish,steps,function):
+        lista=[]#storing results of finding intervals
+        length = float(abs(start-finish))#size of sample space
+        steplen = float(length/steps)#size of steps
+        temp = []#here make temporary list of xvalues
+        tempnew=[]#here making a temp list of results
+        val=0
+        for i in range(steps):#calculating values of function
+            temp.append(function.val(start+val))
+            val+=steplen
+            #print(val)
+        #print(temp)
+        for i in range(steps -1):#checking for changes of sign in this range
+            a=temp[i]
+            b=temp[i+1]
+            #print (a ,b)
+            #print (sign(a,b))
+            if sign(a,b) is False :
+                #print ("vals of crossing")
+                #if(a<b):
+                tempnew.append(start+i*steplen)#appending xvalues
+                tempnew.append(start+(i+1)*steplen)#appending xvalues
+                lista.append(tempnew)
+                tempnew=[]
+            else: 
+                continue
+        temp=[]
+        return lista
+
+    #print (sign(1,-1))
+    #print (sign(2,3))
+    #we will input 
+    
+    def Bisection(x1, x2, toler,function):
+        xmid = (x2+x1)/2
+        err = abs(x2-x1)
+        nstep = 1
+        nstepmax = 50
+        for i in range(nstepmax): # limit iterations to prevent infinite loop
+            mid = (x1+ x2)/2 # new midpoint
+            if function.val(mid) == 0 or abs((x2 - x1)/2) < toler: # solution found
+                return mid
+               # print("lwaegfalf")
+            elif sign(function.val(mid),function.val(x1)) is True: 
+                #here we change a to c or b to c depending on sign(aorb)==sign(c)
+                x1 = mid #chance old midpoint to new leftpoint
+            else:
+                x2 = mid # new interval
+        #print("not reached thresh")
+        return xmid
+   
+    
+    pinter = intervalfinder(-3,4,20,poly)
+    einter = intervalfinder(-1,1,10,expon)
+    print(einter)
+    #print(pinter)
+    #print pvals[0][0],pvals[0][1]
+    #here running for the amount of crosses the bisection algorithm
+    for i in range(len(pinter)):
+        bipres.append(Bisection(pinter[i][0],pinter[i][1],0.0001,poly))
+
+    print(bipres)
+    #here midpoint 
+    for i in range(len(einter)):
+        bieres.append(Bisection(einter[i][0],einter[i][1],0.0001,expon))
+    print(bieres)
+    #plt.plot(xvalues,ysin , 'r-',xvalues ,yexp, 'g-',xvalues,ypoly,'b--')
+    #plt.show()
+    #plt.plot(xvalues, mth.cos(xvalues)*mth.sin(xvalues*3), 'r--')
+    #    plt.show()
+
+    exit()
+
+main()
