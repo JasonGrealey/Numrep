@@ -13,6 +13,9 @@ nreres = []
 secpres = []
 seceres=[]
 secsres=[]
+hypres = []
+hyeres=[]
+hysres=[]
 
 #10.2 -7.4x -2.1x^2 +x^3
 #e^x - 2
@@ -142,7 +145,7 @@ def main():
 
     def NR(function, x0, toler):
         lastX = x0
-        nextX = lastX + 1* toler  # "different than lastX so loop starts OK
+        nextX = lastX + 10* toler  # "different than lastX so loop starts OK
         while (abs(lastX - nextX) > toler):  # this is how you terminate the loop - note use of abs()
             newY = function.val(nextX)                     # just for debug... see what happens
             #print ("f(", nextX, ") = ", newY)     # print out progress... again just debug
@@ -165,23 +168,35 @@ def main():
     def pclarke(x0,x1,function,toler):
          xs = x1 - function.val(x1)*((x1-x0)/(function.val(x1)-function.val(x0)))
          xmid = (x0+x1)/2
-         if xs <= x1 or xs <=x0:
+         if xs <= x1 and xs >=x0:
              #inrange
              x2=xs
              if sign(function.val(x2),function.val(x1)) == True: 
-                #here we change a to c or b to c depending on sign(aorb)==sign(c)
-                x1 = x2 #chance old midpoint to new leftpoint
+                 #here we change a to c or b to c depending on sign(aorb)==sign(c)
+                 x1 = x2 #chance old midpoint to new leftpoint
+                 #now we can use secant method again with x0,x2
+                 val = secant(function,x0,x2,toler,100)
+                 return val
+                 
              else:
-                x0 = x2 # new interval
-            
+                 x0 = x2 # new interval
+                 val = secant(function,x2,x1,toler,100)
+                 return val
+                 
          else:
              x2 = xmid
              if sign(function.val(x2),function.val(x1)) == True: 
                 #here we change a to c or b to c depending on sign(aorb)==sign(c)
                 x1 = x2 #chance old midpoint to new leftpoint
+                #now we do midpoint method
+                val = Bisection(x0,x2,toler,function)
+                return val
              else:
                 x0 = x2 # new interval
-             
+                val = Bisection(x2,x1,toler,function)
+                return val
+        #now repeat for new values
+        
 
    
     #here running for the amount of crosses the bisection algorithm
@@ -190,9 +205,11 @@ def main():
         bipres.append(Bisection(pinter[i][0],pinter[i][1],tol,poly))
         nrpres.append(NR(poly,pinter[i][0],tol))
         secpres.append(secant(poly,pinter[i][0],pinter[i][1],tol,100))
+        hypres.append(pclarke(pinter[i][0],pinter[i][1],poly,tol))
     print(bipres)#correct
     print (nrpres) 
     print(secpres)
+    print(hypres)
     
     for i in range(len(einter)):
         bisection = Bisection(einter[i][0],einter[i][1],tol,expon)
@@ -200,18 +217,22 @@ def main():
         bieres.append(bisection)
         nreres.append(NR(expon,einter[i][0],tol))
         seceres.append(secant(expon,einter[i][0],einter[i][1],tol,100))
+        hyeres.append(pclarke(einter[i][0],einter[i][1],expon,tol))
     print(bieres)
     print(nreres)
     print(seceres)
+    print(hyeres)
     
     for i in range(len(sinter)):
         bisres.append(Bisection(sinter[i][0],sinter[i][1],tol,sincos))
         nrsres.append(NR(sincos,sinter[i][0],tol))
         secsres.append(secant(sincos,sinter[i][0],sinter[i][1],tol,100))
+        hysres.append(pclarke(sinter[i][0],sinter[i][1],sincos,tol))
 
     print(bisres)
     print(nrsres)
     print(secsres)
+    print(hysres)
     exit()
 
 main()
