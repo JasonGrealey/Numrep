@@ -20,8 +20,9 @@ hysres=[]
 #10.2 -7.4x -2.1x^2 +x^3
 #e^x - 2
 #cos(X)sin(3s)
+
 def main():
-    class poly():
+    class poly():#polynomial class
         def __init__(self,_coeffs):
             self.coeffs = _coeffs
         def val(self,x):
@@ -34,7 +35,7 @@ def main():
             for power in range(len(self.coeffs)-1):
                 valder+= (power+1)*self.coeffs[power+1]*math.pow(x, float(power))
             return valder
-    class sincos():
+    class sincos():#class for combination of sin and cos
         def __init__(self,ksin,kcos):
             self.ksin=ksin
             self.kcos=kcos
@@ -42,7 +43,7 @@ def main():
             return (math.cos(self.kcos*x))*(math.sin(self.ksin*x))
         def der(self,x):
             return (-(1.0)*self.kcos*(math.sin(self.kcos*x))*(math.sin(self.ksin*x)) + self.ksin*((math.cos(self.kcos*x))*(math.cos(self.ksin*x))))
-    class exp():
+    class exp():#exponential class
         def __init__(self,k,consta):
             self.k=k
             self.consta=consta
@@ -55,7 +56,7 @@ def main():
     '''
     #now for the real functions
     sincos = sincos(3,1)#[sin,cos]
-    expon = exp(2,-1)#[k,const]
+    expon = exp(1,-2)#[k,const]
     poly = poly([10.2,-7.4,-2.1,1])#[const,x^1...x^n]
     xvalpol = np.linspace(-3,4)
     xvale = np.linspace(-1,0.3)
@@ -65,11 +66,15 @@ def main():
     ysin = []
     ypoly = []
     yexp = []
-    for i in range(len(xvalpol)):#they have same range
+
+    for i in range(len(xvalpol)):#they have same length
         ysin.append(sincos.val(xvalsi[i]))
         ypoly.append(poly.val(xvalpol[i]))
         yexp.append(expon.val(xvale[i]))
     
+
+
+    #plotting them
     #  for i in len(xvalues)
     plt.figure(1)
 
@@ -88,7 +93,7 @@ def main():
     
     plt.show()
     
-    xvals = []
+    #xvals = []
     def sign(a, b):#ret true if same sign, false otherwise
         return( a * b > 0)
 
@@ -206,10 +211,14 @@ def main():
         nrpres.append(NR(poly,pinter[i][0],tol))
         secpres.append(secant(poly,pinter[i][0],pinter[i][1],tol,100))
         hypres.append(pclarke(pinter[i][0],pinter[i][1],poly,tol))
-    print(bipres)#correct
-    print (nrpres) 
-    print(secpres)
-    print(hypres)
+    print("Polynomial Results are!")
+    print("bisection method results: "'{}'.format(bipres))#correct
+    print("Newton Rapson method results: " '{}' .format(nrpres))
+    print("Secant method results: " '{}' .format(secpres))
+    print("hybrid method results: " '{}' .format(bipres))
+    #print (nrpres) 
+    #print(secpres)
+    #print(hypres)
     
     for i in range(len(einter)):
         bisection = Bisection(einter[i][0],einter[i][1],tol,expon)
@@ -218,21 +227,30 @@ def main():
         nreres.append(NR(expon,einter[i][0],tol))
         seceres.append(secant(expon,einter[i][0],einter[i][1],tol,100))
         hyeres.append(pclarke(einter[i][0],einter[i][1],expon,tol))
-    print(bieres)
-    print(nreres)
-    print(seceres)
-    print(hyeres)
+    print("Exponential results here!")
+    print("bisection method results: " '{}' .format(bieres))
+    print("Newton Rapson method results: " '{}'.format(nreres))
+    print("Secant method results: " '{}' .format(seceres))
+    print("Hybrid method results: " '{}' .format(hyeres))
+    #print(bieres)
+    #print(nreres)
+    #print(seceres)
+    #print(hyeres)
     
     for i in range(len(sinter)):
         bisres.append(Bisection(sinter[i][0],sinter[i][1],tol,sincos))
         nrsres.append(NR(sincos,sinter[i][0],tol))
         secsres.append(secant(sincos,sinter[i][0],sinter[i][1],tol,100))
         hysres.append(pclarke(sinter[i][0],sinter[i][1],sincos,tol))
-
-    print(bisres)
-    print(nrsres)
-    print(secsres)
-    print(hysres)
+    print("SinCos results here!")
+    print("bisection method results: " '{}' .format(bisres))
+    print("Newton Rapson method results: " '{}' .format(nrsres))
+    print("Secant method results: " '{}' .format(secsres))
+    print("Hybrid method results: " '{}' .format(hysres))
+    #print(bisres)
+    #print(nrsres)
+    #print(secsres)
+    #print(hysres)
     exit()
 
 main()
