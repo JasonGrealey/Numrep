@@ -5,16 +5,53 @@ import math
 
 def main():
     #         Get the filename as string
-    #fn = str(raw_input("File : "))
-    fn = "desync4.pgm"
+    f1 = "desync1.pgm"
     #         Read file it np array
-    img = misc.imread(fn)
-    imgold = misc.imread(fn)
+    img = misc.imread(f1)
+    imgtest=misc.imread(f1)
+    #storing old version
+    imgold = misc.imread(f1)
     print(len(img))
-    print(img[0][0])
+    #print(img[0][0])
     #print(img)
 
-    
+
+
+#=================================================================================
+    #         Get the filename as string
+    f2 = "desync2.pgm"
+    #         Read file it np array
+    img2 = misc.imread(f2)
+    #storing old version
+    img2old = misc.imread(f2)
+    print(len(img2))
+    #print(img[0][0])
+    #print(img)
+
+
+#=================================================================================
+    #         Get the filename as string
+    f3 = "desync3.pgm"
+    #         Read file it np array
+    img3 = misc.imread(f3)
+    #storing old version
+    img3old = misc.imread(f3)
+    print(len(img3))
+    #print(img[0][0])
+    #print(img)
+
+#=================================================================================
+    #         Get the filename as string
+    f4 = "desync4.pgm"
+    #         Read file it np array
+    img4 = misc.imread(f4)
+    #storing old version
+    img4old = misc.imread(f4)
+    print(len(img4))
+    #print(img[0][0])
+    #print(img)
+
+
     '''
 
     #2dfft
@@ -37,7 +74,8 @@ def main():
         
         #print(fnewshift)
         f1d.append(fnewshift)
-
+    #phase correlation function taking two rows from image file
+    #returns the position of the peak of the correlation
     def corr(row1,row2):
         ft = np.fft.fft(row1)
         fshift= np.fft.fftshift(ft)
@@ -48,11 +86,54 @@ def main():
         imult= np.fft.ifft(mult)
         return(np.argmax(imult))
 
+    #def opcorr(row1,row2)
+    '''
+    def multicorr(row1,row2,row3,row4):
+        '''
+        ft1=np.fft.fft(row1)
+        fshift1=np.fft.fftshift(ft1)
+        ft2=np.fft.fft(row2)
+        fshift2=np.fft.fftshift(ft2)
+        ft3=np.fft.fft(row3)
+        fshift3=np.fft.fftshift(ft3)
+        '''
+        #looking at shifting row 2 back
+        val = int((corr(row2,row3)+corr(row1,row2)))#negative because its looking backwards
+        return val
+    '''    
+    shitvals=[]
     for i in range(len(img)-1):
-        val = corr(img[i],img[i+1])
-        #print(val)
-        img[i+1]=np.roll(img[i+1],-val)
+        if i == 0 or i>=(len(img)-4):
+            continue
+        else:
+            val=multicorr(img[i],img[i+1],img[i+2],img[i+2])
+            print(val)
+            img[i+1]=np.roll(img[i+1],-val)
+    print(shitvals)
+        #print(i)
+    '''
+        if (len(img)-7)<=i<=(len(img)-1):
+            print(i)
+            val = corr(img[i],img[i+1])
+            img[i+1]=np.roll(img[i+1],-val)
+        elif i<2:
+            continue
+        else:
+            print("lol" '{}'.format(i))
+            valnew = multicorr(imgtest[i],imgtest[i+1],imgtest[i+2],imgtest[i+3],imgtest[i+4])
+            imgtest[i+2]=np.roll(imgtest[i+2],-valnew)
+        #else:
+        '''
         
+    for i in range(len(img2)-1):
+        val2=corr(img2[i],img2[i+1])
+        img2[i+1]=np.roll(img2[i+1],-val2)
+    for i in range(len(img3)-1):
+        val3=corr(img3[i],img3[i+1])
+        img3[i+1]=np.roll(img3[i+1],-val3)
+    for i in range(len(img4)-1):
+        val4=corr(img4[i],img4[i+1])
+        img4[i+1]=np.roll(img4[i+1],-val4)
         
     #mag_spec = 20*np.log(np.abs(f1d))
 
@@ -75,8 +156,8 @@ def main():
     '''
         #print(fconj)
         #print(f1d)
-    shiftvals=[]
-    val =[]
+    #shiftvals=[]
+    #val =[]
     #ival = []
     #now comparing lines
     #newimage=[]
@@ -131,11 +212,37 @@ def main():
     #plt.title('Magnitude Spectrum'), plt.xticks([]), plt.yticks([])
     plt.show()
     '''
-    plt.subplot(121),plt.imshow(img, cmap = 'gray')
-    plt.title('Output Image'), plt.xticks([]), plt.yticks([])
-    plt.subplot(122),plt.imshow(imgold, cmap = 'gray')
-    plt.title('Input Image'), plt.xticks([]), plt.yticks([])
+    '''
+    plt.subplot(121),plt.imshow(imgold, cmap = 'gray')
+    plt.title('input Image 1'), plt.xticks([]), plt.yticks([])
+    plt.subplot(122),plt.imshow(imgtest, cmap = 'gray')
+    plt.title('output Image 1'), plt.xticks([]), plt.yticks([])
     plt.show()
+    '''
+    plt.subplot(121),plt.imshow(img, cmap = 'gray')
+    plt.title('Output Image 1'), plt.xticks([]), plt.yticks([])
+    plt.subplot(122),plt.imshow(imgold, cmap = 'gray')
+    plt.title('Input Image 1'), plt.xticks([]), plt.yticks([])
+    plt.show()
+
+    plt.subplot(121),plt.imshow(img2, cmap = 'gray')
+    plt.title('Output Image 2'), plt.xticks([]), plt.yticks([])
+    plt.subplot(122),plt.imshow(img2old, cmap = 'gray')
+    plt.title('Input Image 2'), plt.xticks([]), plt.yticks([])
+    plt.show()
+
+    plt.subplot(121),plt.imshow(img3, cmap = 'gray')
+    plt.title('Output Image 3'), plt.xticks([]), plt.yticks([])
+    plt.subplot(122),plt.imshow(img3old, cmap = 'gray')
+    plt.title('Input Image 3'), plt.xticks([]), plt.yticks([])
+    plt.show() 
+
+    plt.subplot(121),plt.imshow(img4, cmap = 'gray')
+    plt.title('Output Image 4'), plt.xticks([]), plt.yticks([])
+    plt.subplot(122),plt.imshow(img4old, cmap = 'gray')
+    plt.title('Input Image 4'), plt.xticks([]), plt.yticks([])
+    plt.show()
+
     #print(shiftvals)
     
     #comparing three lines
