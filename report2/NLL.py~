@@ -1,0 +1,43 @@
+# first we shall import the data
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import minimize
+
+def main():
+    filename = "DecayTimesData.txt"
+    f = np.loadtxt(filename)
+    print(f[0])
+    #hist = np.histogram(f,bins=20)
+    plt.hist(f,bins=100)
+    plt.show()
+
+
+    #function for PDF
+    def pdf(t,tau1,tau2,f):
+        val = f*(1/tau1)*np.exp(-(t/tau1)) + (1-f)*(1/tau2)*np.exp(-(t/tau2))
+        return val
+    test = []
+    for i in range(100):
+        val = pdf(np.random.uniform(0,3,size=1),2,2.5,0.5)
+        test.append(val)
+
+    def pdfnll(t,tau1,tau2,f):
+        nll = -1*(np.log(pdf(t,tau1,tau2,f)))
+        #return nll
+        
+    
+    yvals = [pdfnll(f[i],0.5,0.5,0.5) for i in range(len(f))]
+    nll = np.sum(yvals)
+    
+    def nll(params):
+        summ=0
+        for i in range(len(params)):
+            summ+=pdfnll(i,0.5,0.5,0.5)
+    
+
+        
+    nllopt = minimize(nll(,
+    print(nll)
+    plt.hist(test,bins=20)
+    plt.show()
+main()
