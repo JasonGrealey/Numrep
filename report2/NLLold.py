@@ -383,19 +383,17 @@ def main():
     print("Mean t = " '{}' " and stdev of t is "'{}' .format(meant,stdevt))
     print("observed t = " '{}' .format(meanobst))
     
-    
-    
     xvalplot = np.linspace(0,7,100)
-    yvalplot = np.zeros(len(fi))
-    for i in range(len(fi)):
+    yvalplot = np.zeros(len(xvalplot))
+    for i in range(len(xvalplot)):
         yvalplot[i]=pdf(fi[i],tau1opt,tau2opt,fopt)
         
-    #plt.hist(fi,bins=100)
-    #plt.plot(np.histogram(tlist))
-    #plt.show()
+    plt.hist(fi,bins=100)
+    plt.hist(yvalplot)
+    plt.show()
     #plt.plot(xvalplot,yvalplot)
     #plt.show()
-    
+
     '''
     initparams = [0.5,0.5,0.5]
     #nllopt = minimize(nll,x0 = initparams,args=(fi,))
