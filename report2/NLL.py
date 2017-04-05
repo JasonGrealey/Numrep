@@ -7,58 +7,34 @@ import random
 def main():
     filename = "DecayTimesData.txt"
     fi = np.loadtxt(filename)
-    #print("first t value is " '{}' .format(fi[0]))
-    #hist = np.histogram(f,bins=20)
-    #plt.hist(fi,bins=100)
-    #plt.show()
     meanobst = np.mean(fi)
-    cutoff = 9.578530184172956e-08
-    #def normfactor(cut):
-    #    val =1/(1- np.exp(-cut/
-    #function for PDF
+    stdevobst = np.std(fi)
+    def normfactor(cut,tau1,tau2,f):#determing by how much of pdf we need to normlaise due to cutoff
+        val =1/(1- np.exp(-cut/tau2) - f*(np.exp(-cut/tau1) - np.exp(-cut/tau2)))
+        return(val)
     def pdf(t,tau1,tau2,f):
-        # print("KEK >>>>>> ",tau1,tau2,f)
-        val = f*(1/tau1)*np.exp(-(t/tau1)) + (1-f)*(1/tau2)*np.exp(-(t/tau2))
+        val = f*(1/tau1)*np.exp(-(t/tau1)) + (1-f)*(1/tau2)*np.exp(-(t/tau2))*1.00949845061#this normalises the pdf
         return val
-    
-    
     def pdfnll(t,params):
         f = params[2]
         tau1 = params[0]
         tau2 = params[1]
-        #print(pdf(t,tau1,tau2,f).all() > 0 , tau1, tau2, f)#checking that values stay positive
-        nll = -1*(np.log(pdf(t,tau1,tau2,f) + 0.01))#ensuring never taking log of negative number
-        return nll
-        
-    #testval = pdfnll(fi[0],[0.5,0.5,0.5])
-    #print ("NLL contribution from val i is " '{}' .format(testval))
-    
-    yvals = [pdfnll(fi[i],[0.5,0.5,0.5]) for i in range(len(fi))]
-    nlltest = np.sum(yvals)
-    
+        val = pdf(t,tau1,tau2,f)
+        if np.any(val)<=0:#at some points during optimisation the pdf may be negative so we must ignore these values 
+            nll = 0
+            return nll
+        else:
+            #nll = -1*(np.log(pdf(t,tau1,tau2,f) + 0.00001))#ensuring never taking log of negative number
+            nll = -1*(np.log(pdf(t,tau1,tau2,f)))
+            return nll
     def nll(params,vals):#in the form for scipy optimize
-        #f = params[2]
-        #tau1 = params[0]
-        #tau2 = params[1]
         return np.sum(pdfnll(vals, params))
-    
-
-    #bnds = np.array([[0.0001]*3, [float("inf")]*2 + [1] ]).T#no negativity in the parameters
-    bnds = np.array([[0.1]*2 + [0], [float("inf")]*2 + [1] ]).T
-    #nlltest2= nll(fi,[0.5,0.5,0.5])
-    #print ("NLL from whole method is  " '{}' .format(nlltest2))#checking nll method
-    #initparams = np.asarray([1,1.5,0.5])
-    initparams = np.asarray([0.2,1,0.5])
-    
-    #NLL = lambda vals,*args: nll(vals,*args)
-    Nll = lambda:nll(data, args), 
-    #print(nll, type(nll))
-    #'L-BFGS-B
-    result = minimize(nll,x0=initparams, args=(fi,), bounds=bnds, method='TNC')
-    resultdiff = minimize(nll,x0=initparams,args=(fi,),bounds=bnds, method='L-BFGS-B')
+    bnds = np.array([[0.0001]*3, [float("inf")]*2 + [1] ]).T#no negativity in the parameters
     #bounding here to stop f,tau1 and tau2 from going negative
+    initparams = np.asarray([3,5,0.5])
+    Nll = lambda:nll(data, args), 
+    result = minimize(nll,x0=initparams, args=(fi,), bounds=bnds, method='TNC')
     print("QUESTION 1")
-    print("minimizing with the L-BFGS-B Method " '{}' .format(resultdiff.x))
     res = result.x
     print("minimizing with the TNC Method " '{}' .format(res))
     print("====================================")
@@ -73,6 +49,9 @@ def main():
     #cutoffs for sampling t
     t0 =0
     t1 =15*tau2opt#cutoff, means we will be underestimatng for extremely high tvals
+    cutoff = 9.578530184172956e-08 #Probability of pdf getting past cutoff t1
+    tet = normfactor(t1,0.18,0.84,0.73)
+    #print(tet)#this factor was calculated to normalise it
     tau1_0 = 0.1
     tau1_1 = 5*tau1opt#cutoff for sampling tau1
     tau2_0 = 0.1
@@ -105,12 +84,7 @@ def main():
                 return xscal#scaled tau1 bin val
             else:
                 continue 
-                
-   
 
-    
-    
-    
     #keeping tautwo and f constant
     #defining lists
     newdata=[]
@@ -125,8 +99,6 @@ def main():
         taunew = np.mean(newdata)
         newdata=[]
         tauonelist.append(taunew)
-    
-    #tau1tot = np.mean(tauonelist)
     stdevtau1 = np.std(tauonelist)
     print("error on tau1 from parameter searching 3 sigma is = " '{}' .format(stdevtau1))
 
@@ -145,11 +117,7 @@ def main():
                 return xscal#scaled tau1 bin val
             else:
                 continue 
-
-
     tautwolist = []
-    #stlist = []
-    #now we want to do the previous 'experiment' 500 times
     for i in range (200):
         for j in range (500):
             nextval = nexttau2(fi[0],tau1opt,fopt)#t,tau1,f kept constant when sampling for tau2
@@ -161,10 +129,7 @@ def main():
     
     stdevtau2 = np.std(tautwolist)
     print("error on tau2 from parameter searching 3 sigma is = " '{}' .format(stdevtau2))
-
-
     #now for sigma f===============================================
-
     def nextf(t,tauone,tautwo):#drawing values from distribution for tau2
         #same type of method at nexttau1 and nexttau2 - I should have made classes for them
         y2=1.0#to start loop y2>y1
@@ -179,20 +144,14 @@ def main():
                 return xscal#scaled tau1 bin val
             else:
                 continue 
-
-
     flist = []
-    #stlist = []
-    #now we want to do the previous 'experiment' 500 times
     for i in range (200):
         for j in range (500):
             nextval = nextf(fi[0],tau1opt,tau2opt)#t,tau1,tau2 kept constant when sampling for f
             newdata.append(nextval)
-            #here calculate tau to get a look at stderr over time
         fnew = np.mean(newdata)
         newdata=[]
         flist.append(fnew)
-    
     stdevf = np.std(flist)
     print("error on f from parameter searching 3 sigma is = " '{}' .format(stdevf))
 
@@ -201,13 +160,9 @@ def main():
 
 
     xtauone = np.linspace((tau1opt - 3*stdevtau1),(tau1opt + 3*stdevtau1))
-    #rescaling
-    #for i in range(len(xtauone)):
-    #    xtauone[i] = xtauone[i]/(tau1opt)
     ytauone = np.zeros(len(xtauone))
     xtautwo = np.linspace((tau2opt - 3*stdevtau2),(tau2opt + 3*stdevtau2))
     ytautwo = np.zeros(len(xtautwo))
-    
     xf = np.linspace((fopt - 3*stdevf),(fopt + 3*stdevf))
     yf = np.zeros(len(xf))
     #=============================================================================
@@ -216,64 +171,48 @@ def main():
     for i in range(len(xtauone)):
         ytauone[i] = nll([tauonebaseval,tau2opt,fopt],fi)
         tauonebaseval = tauonebaseval + step
-        #print(tauonebaseval)
-        
-    '''
     plt.plot(xtauone,ytauone)
-    plt.xlabel("Tau one")
-    plt.ylabel("Negative Log Likelihood")
-    plt.title("Negative Log Likelihood as Tau two varies around mean")
+    plt.xlabel("Tau one", fontsize=20)
+    plt.ylabel("Negative Log Likelihood", fontsize=20)
+    plt.title("Negative Log Likelihood as Tau one varies around mean", fontsize=20)
     plt.show()
-    '''
-
     #==============================================================================    
     tautwobaseval = tau2opt - 3*stdevtau2
     step2 = xtautwo[1]-xtautwo[0]
     for i in range(len(xtautwo)):
         ytautwo[i] = nll([tau1opt,tautwobaseval,fopt],fi)
         tautwobaseval = tautwobaseval + step
-        #print(tautwobaseval)
-
-
-    '''
     plt.plot(xtautwo,ytautwo)
-    plt.xlabel("Tau two")
-    plt.ylabel("Negative Log Likelihood")
-    plt.title("Negative Log Likelihood as Tau two varies around mean")
+    plt.xlabel("Tau two", fontsize=20)
+    plt.ylabel("Negative Log Likelihood", fontsize=20)
+    plt.title("Negative Log Likelihood as Tau two varies around mean", fontsize=20)
     plt.show()
-    '''
     #===============================================================================
     fbaseval = fopt - 3*stdevf
     stepf = xf[1]-xf[0]
     for i in range(len(xf)):
         yf[i] = nll([tau1opt,tau2opt,fbaseval],fi)
         fbaseval = fbaseval + stepf
-        #print(fbaseval)
     print("====================================")
-
-    '''
     plt.plot(xf,yf)
-    plt.xlabel("Fraction f")
-    plt.ylabel("Negative Log Likelihood")
-    plt.title("Negative Log Likelihood as Fraction f varies around mean")
+    plt.xlabel("Fraction f", fontsize=20)
+    plt.ylabel("Negative Log Likelihood", fontsize=20)
+    plt.title("Negative Log Likelihood as Fraction f varies around mean", fontsize=20)
     plt.show()
-    '''
     #================================================================================
     #================================================================================
     #=====================================QUESTION3==================================
     #================================================================================
     #================================================================================
     print("QUESTION 3")
-   
-    
     #method for going up NLL
-    def checkertau1(toler):
+    def checkertau1(toler):#this method check how much you vary tau1
+        #to move the NLL by 0.5 from minimum
         nllvalmean =  nll([tau1opt,tau2opt,fopt],fi)#calculate at mean
         nllvalwant = nllvalmean + 0.5 #value we want
         guessstep = stdevtau1*2 #big step to move tau1
         howfar =0 #tracking how far we are moving on tauaxis
-        #flip = 0
-        nllvaltest = 2*nllvalwant
+        nllvaltest = 2*nllvalwant#guess
         diff = nllvalwant - nllvaltest
         while abs(guessstep) > toler:
         #for i in range(100):
@@ -281,24 +220,21 @@ def main():
             howfar += guessstep
             if nllvaltest > nllvalwant:
                 guessstep = -guessstep*0.5
-                flip = 1#means it's going backwards
             elif  nllvaltest < nllvalwant:
                 guessstep = -guessstep*0.5
-                flip = 0#now back to forwards
-            #print (guessstep)
         return howfar#distance moved in the parameter axis
     
     errortau1 = checkertau1(0.000001)
     print ("error on tau1 from increasing NLL by 0.5 is " '{}' .format(errortau1))
     #======================================================================
 
-    def checkertau2(toler):
+    def checkertau2(toler):#this method check how much you vary tau2
+        #to move the NLL by 0.5 from minimum
         nllvalmean =  nll([tau1opt,tau2opt,fopt],fi)#calculate at mean
         nllvalwant = nllvalmean + 0.5 #value we want
         guessstep = stdevtau2*2 #big step to move tau1
         howfar =0 #tracking how far we are moving on tauaxis
-        #flip = 0
-        nllvaltest = 2*nllvalwant
+        nllvaltest = 2*nllvalwant#guess
         diff = nllvalwant - nllvaltest
         while abs(guessstep) > toler:
         #for i in range(100):
@@ -306,11 +242,8 @@ def main():
             howfar += guessstep
             if nllvaltest > nllvalwant:
                 guessstep = -guessstep*0.5
-                flip = 1#means it's going backwards
             elif  nllvaltest < nllvalwant:
                 guessstep = -guessstep*0.5
-                flip = 0#now back to forwards
-            #print (guessstep)
         return howfar#distance moved in the parameter axis
     
     errortau2 = checkertau2(0.000001)
@@ -320,12 +253,12 @@ def main():
     #=====================================================================
     #======================================================================
 
-    def checkerf(toler):
+    def checkerf(toler):#this method check how much you vary f
+        #to move the NLL by 0.5 from minimum
         nllvalmean =  nll([tau1opt,tau2opt,fopt],fi)#calculate at mean
         nllvalwant = nllvalmean + 0.5 #value we want
         guessstep = stdevf*2 #big step to move tau1
         howfar =0 #tracking how far we are moving on faxis
-        #flip = 0
         nllvaltest = 2*nllvalwant
         diff = nllvalwant - nllvaltest
         while abs(guessstep) > toler:
@@ -336,7 +269,6 @@ def main():
                 guessstep = -guessstep*0.5#go backwards smaller step
             elif  nllvaltest < nllvalwant:
                 guessstep = -guessstep*0.5#go forwards smaller step
-            #print (guessstep)
         return howfar#distance moved in the parameter axis
     
     errorf = checkerf(0.000001)
@@ -351,7 +283,6 @@ def main():
     #=========================================================================
     #=========================================================================
     #=========================================================================
-    
     #here we are drawing t from the fitted distribution
     print("QUESTION 4")
     def nextt(tauone,tautwo,fnew):#drawing values from distribution for t
@@ -359,7 +290,7 @@ def main():
         y1=0.0
         xscal = 0.0
         while y2>y1:
-            xscal = ran(t0,t1)
+            xscal = ran(t0,t1)#scaled random xval 
             y1 = pdf(xscal,tauone,tautwo,fnew)
             y2 = random.random()
             y2 = maxfun(tau1opt,tau2opt,fopt)*y2#scaling y val by optimized function
@@ -367,13 +298,10 @@ def main():
                 return xscal#scaled t bin val
             else:
                 continue 
-                
     tlist = []
-    #stlist = []
-    #now we want to do the previous 'experiment' 500 times
     for i in range (200):
-        for j in range (500):
-            nextval = nextt(tau1opt,tau2opt,fopt)
+        for j in range (500):#performing 200 experiments of 500 decays
+            nextval = nextt(tau1opt,tau2opt,fopt)#nextt draws t from optimized pdf
             newdata.append(nextval)
         tnew = np.mean(newdata)
         newdata=[]
@@ -381,28 +309,35 @@ def main():
     meant = np.mean(tlist)
     stdevt = np.std(tlist)
     print("Mean t = " '{}' " and stdev of t is "'{}' .format(meant,stdevt))
-    print("observed t = " '{}' .format(meanobst))
+    print("observed t = " '{}' " and stdev of t in experiment is = " '{}' .format(meanobst,stdevobst))
     
     
-    
-    xvalplot = np.linspace(0,7,100)
+    #printing how far values are from experiment
+    xvalplot = np.linspace(0,max(fi),100)
     yvalplot = np.zeros(len(fi))
     for i in range(len(fi)):
         yvalplot[i]=pdf(fi[i],tau1opt,tau2opt,fopt)
-        
+    withinexp = abs(meant-meanobst)/stdevobst
+    print("within " '{}' " standard deviations of experimental error".format(withinexp))
+    withinsim = abs(meant-meanobst)/stdevt
+    print("within " '{}' " standard deviations of simulated error".format(withinsim))
+
+    #plotting the normalised histogram against optomized pdf
+    xval = np.linspace(0,7,100)
+    yval = [pdf(xval[i],tau1opt,tau2opt,fopt) for i in range(len(xval))]
+    plt.plot(xval,yval,linewidth=3)
+    plt.hist(fi,bins=100,normed=True)#normalise so pdf will fit properly
     #plt.hist(fi,bins=100)
-    #plt.plot(np.histogram(tlist))
-    #plt.show()
+    plt.xlabel("Decay Time", fontsize=20)
+    plt.ylabel("Normalised Counts and Optimized PDF", fontsize=20)
+    plt.title("The Normalised Experimental Histogram vs The Optimized PDF", fontsize=20)
+    plt.show()
+
+    plt.hist(fi,bins=50)
+    plt.xlabel("Decay Time", fontsize=20)
+    plt.ylabel("Counts of Decays", fontsize=20)
+    plt.title("Experimental Decays as a Histogram", fontsize=20)
     #plt.plot(xvalplot,yvalplot)
-    #plt.show()
-    
-    '''
-    initparams = [0.5,0.5,0.5]
-    #nllopt = minimize(nll,x0 = initparams,args=(fi,))
-    nllopt = minimize(nll(fi,initparams),x0 =initparams)
-    print(nllopt.x)
-    print("NLL initially is " '{}' .format(nlltest))
-    #plt.hist(test,bins=20)
-    '''
-    #plt.show()
+    plt.show()
+    #apologies for making the code long, hopefully it is still readable. 
 main()
